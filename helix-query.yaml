@@ -4,16 +4,7 @@ indices:
   blog:
     include:
       - '/blog/**'
-    exclude:
-      - '/blog/'
-      - '/blog/index*'
-      - '/blog/gnav*'
-      - '/blog/footer*'
-      - '/blog/authors/**'
-      - '/blog/banners/**'
-      - '/blog/categories/**'
-      - '/blog/tags/**'
-    target: /blog/query-index.xlsx
+    target: /blog/query-index
     properties:
       author:
         select: head > meta[name="author"]
@@ -41,14 +32,6 @@ indices:
           attribute(el, 'content')
       category:
         select: head > meta[name="category"]
-        value: |
-          attribute(el, 'content')
-      tags:
-        select: head > meta[property="article:tag"]
-        values: |
-          attribute(el, 'content')
-      description:
-        select: head > meta[name="description"]
         value: |
           attribute(el, 'content')
       robots:
