@@ -1,4 +1,4 @@
 window.hlx.initSidekick({
-  project: 'Business',
+  project: 'BambooHR',
   hlx3: true,
 });
