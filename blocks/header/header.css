@@ -1,5 +1,9 @@
 /* header and nav layout */
 
+header {
+  --background-color: 255, 255, 255;
+}
+
 header .nav {
   display: grid;
   grid-template-areas: 'hamburger brand' 'sections sections' 'buttons buttons';
@@ -192,6 +196,7 @@ header .nav[aria-expanded='true'] .nav-buttons {
     background-color: rgba(var(--background-color),.92);
     width: 300px;
     left: 300px;
+    margin-top: -30px;
   }
 
 
