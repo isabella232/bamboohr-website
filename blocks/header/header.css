@@ -178,13 +178,22 @@ header .nav[aria-expanded='true'] .nav-buttons {
     padding: 16px;
   }
 
-  header .nav-section[aria-expanded='true'] ul {
+  header .nav-section[aria-expanded='true'] > ul {
     display: block;
     position: absolute;
     background-color: rgba(var(--background-color),.92);
     width: 300px;
     left: 0px;
   } 
+
+  header .nav-section[aria-expanded='true'] li[aria-expanded='true'] > ul {
+    display: block;
+    position: absolute;
+    background-color: rgba(var(--background-color),.92);
+    width: 300px;
+    left: 300px;
+  }
+
 
   header .nav-buttons {
     display: flex;
