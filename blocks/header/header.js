@@ -19,7 +19,11 @@ export default async function decorate(block) {
 
   // fetch nav content
   const resp = await fetch('/nav.plain.html');
-  const html = await resp.text();
+  let html = await resp.text();
+
+  // forward compatibility
+  html = html.replaceAll('<ol>', '<ul>');
+  html = html.replaceAll('</ol>', '</ul>');
 
   // decorate nav DOM
   const nav = document.createElement('div');
@@ -32,21 +36,24 @@ export default async function decorate(block) {
       // first section is the brand section
       const brand = navSection;
       brand.classList.add('nav-brand');
+      nav.insertBefore(navSections, brand.nextElementSibling);
     } else {
       // all other sections
-      navSections.append(navSection);
-      navSection.classList.add('nav-section');
       const h2 = navSection.querySelector('h2');
       if (h2) {
+        navSections.append(navSection);
+        navSection.classList.add('nav-section');
         h2.addEventListener('click', () => {
           const expanded = navSection.getAttribute('aria-expanded') === 'true';
           collapseAllNavSections(navSections);
           navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
         });
+      } else {
+        const buttons = navSection;
+        buttons.className = 'nav-buttons';
       }
     }
   });
-  nav.append(navSections);
 
   // hamburger for mobile
   const hamburger = document.createElement('div');

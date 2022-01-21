@@ -2,7 +2,7 @@
 
 header .nav {
   display: grid;
-  grid-template-areas: 'hamburger brand' 'sections sections';
+  grid-template-areas: 'hamburger brand' 'sections sections' 'buttons buttons';
   grid-template-columns: 50px 1fr;
   grid-template-rows: 64px 1fr;
   align-items: center;
@@ -120,12 +120,26 @@ header .nav[aria-expanded='true'] {
   min-height: 100vh;
 }
 
+/* nav buttons */
+
+header .nav-buttons {
+  grid-area: buttons;
+  display: none;
+  width: 100vw;
+}
+
+header .nav[aria-expanded='true'] .nav-buttons {
+  display: block;
+  align-self: flex-start;
+}
+
+
 /* desktop nav styles */
 
 @media (min-width: 900px) {
   header .nav {
-    grid-template-areas: 'brand sections';
-    grid-template-columns: 200px 1fr;
+    grid-template-areas: 'brand sections buttons';
+    grid-template-columns: 200px 1fr 200px;
   }
 
   header .nav-hamburger {
@@ -171,4 +185,8 @@ header .nav[aria-expanded='true'] {
     width: 300px;
     left: 0px;
   } 
+
+  header .nav-buttons {
+    display: flex;
+  }
 }
