@@ -60,6 +60,12 @@ export default async function decorate(block) {
       } else {
         const buttons = navSection;
         buttons.className = 'nav-buttons';
+        buttons.querySelectorAll('a').forEach((a) => {
+          a.classList.add('button', 'small');
+          if (a.parentElement.tagName === 'EM') {
+            a.classList.add('light');
+          }
+        });
       }
     }
   });

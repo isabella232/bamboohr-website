@@ -2,6 +2,7 @@
 
 header {
   --background-color: 255, 255, 255;
+  --secondary-background-color: 192, 192, 192;
 }
 
 header .nav {
@@ -137,13 +138,19 @@ header .nav[aria-expanded='true'] .nav-buttons {
   align-self: flex-start;
 }
 
+header .nav-buttons .button {
+  padding: 5px 20px;
+  min-width: 60px;
+  margin: 0 5px;
+}
+
 
 /* desktop nav styles */
 
 @media (min-width: 900px) {
   header .nav {
     grid-template-areas: 'brand sections buttons';
-    grid-template-columns: 200px 1fr 200px;
+    grid-template-columns: 200px 1fr 250px;
   }
 
   header .nav-hamburger {
@@ -168,37 +175,52 @@ header .nav[aria-expanded='true'] .nav-buttons {
   }
 
   header .nav-sections h2 {
-    font-size: 18px;
+    font-size: 14px;
     margin: 0;
     cursor: pointer;
+    color: #666;
   }
 
   header .nav-section ul {
     display: none;
+    padding-bottom: 30px;
+    padding-top: 18px;
   }
 
   header .nav-section li {
-    font-size: 18px;
-    padding: 16px;
+    font-size: 14px;
+    padding: 8px 44px;
+    color: #666;
   }
 
   header .nav-section[aria-expanded='true'] > ul {
     display: block;
     position: absolute;
-    background-color: rgba(var(--background-color),.92);
+    background-color: rgba(var(--background-color));
     width: 300px;
-    left: 0px;
+    left: -28px;
+    border-radius: 0 0 20px 20px;
+    box-sizing: border-box;
   } 
 
   header .nav-section[aria-expanded='true'] li[aria-expanded='true'] > ul {
     display: block;
     position: absolute;
-    background-color: rgba(var(--background-color),.92);
+    background-color: rgba(var(--secondary-background-color));
     width: 300px;
-    left: 300px;
-    margin-top: -30px;
+    left: 280px;
+    top: -9px;
+    border-radius: 0 0 20px 0;
+    height: calc(100% - 4px);
+    box-sizing: border-box;
+    z-index: -1;
+    padding-top: 12px;
   }
 
+  header .nav-section ul a:any-link{
+    text-decoration: none;
+    color: #666;
+  }
 
   header .nav-buttons {
     display: flex;
