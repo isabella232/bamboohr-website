@@ -78,7 +78,7 @@
 }
 
 header {
-  height: 64px;
+  height: 70px;
 }
 
 body {
@@ -123,8 +123,8 @@ a.button:hover, a.button:focus {
 }
 
 a.button.small:any-link {
-  padding: 5px 1.5rem;
-  font-size: var(--body-font-size-xs);
+  padding: 8px 1.5rem;
+  font-size: var(--body-font-size-xxs);
 }
 
 a.button.large:any-link {

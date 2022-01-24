@@ -41,6 +41,13 @@ export default async function decorate(block) {
       // all other sections
       const h2 = navSection.querySelector('h2');
       if (h2) {
+        const ul = navSection.querySelector('ul');
+        if (!ul) {
+          const wrapper = document.createElement('div');
+          wrapper.className = 'nav-section-wrapper';
+          while (h2.nextElementSibling) wrapper.append(h2.nextElementSibling);
+          navSection.append(wrapper);
+        }
         navSections.append(navSection);
         navSection.classList.add('nav-section');
         h2.addEventListener('click', () => {
