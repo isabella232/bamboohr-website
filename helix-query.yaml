@@ -22,6 +22,10 @@ indices:
         select: head > meta[property="og:image"]
         value: |
           match(attribute(el, 'content'), 'https:\/\/[^/]+(\/.*)')
+      cardImage:
+        select: head > meta[name="card-image"]
+        value: |
+          match(attribute(el, 'content'), 'https:\/\/[^/]+(\/.*)')
       imageAlt:
         select: head > meta[property="og:image:alt"]
         value: |

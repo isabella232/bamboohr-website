@@ -2,6 +2,6 @@ version: 1
 
 sitemaps:
   blog:
-    origin: https://business.adobe.com
+    origin: https://www.bamboohr.com
     source: /blog/query-index.json
     destination: /blog/sitemap.xml
