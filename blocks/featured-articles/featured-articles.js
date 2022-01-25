@@ -10,7 +10,7 @@ function createCard(article) {
   ).outerHTML;
   card.innerHTML = `<div class="featured-articles-card-header category-color-${toClassName(article.category)}">
     <span class="featured-articles-card-category">${article.category}</span> 
-    <span class="featured-articles-card-readtime">${article.readtime || ''}</span>
+    <span class="featured-articles-card-readtime">${article.readTime || ''}</span>
     </div>
     ${pictureString}
     <div class="featured-articles-card-body">
@@ -39,7 +39,6 @@ export default async function decorate(block) {
         contents.push(card.outerHTML);
       }
     } else {
-      console.log(content);
       contents.push(`<div class="featured-articles-card">${content.outerHTML}</div>`);
     }
   }

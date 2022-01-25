@@ -54,6 +54,8 @@
   --heading-font-size-s: 1.25rem; /* 20px */
   --heading-font-size-xs: 1.125rem; /* 18px */
   --heading-font-size-xxs: 0.875rem; /* 14px */
+  --heading-font-family: 'Fira Sans', 'Trebuchet', sans-serif;
+
   
   /* details */
   --detail-font-weight: 700;
@@ -303,6 +305,7 @@ main .section-wrapper {
 
 main .section-wrapper:first-of-type {
   padding-top: 0;
+  margin-top: 0;
 }
 
 main .section-wrapper:last-of-type {
@@ -351,6 +354,11 @@ main .section-wrapper p.button-container {
 p, dl, ol, ul, pre, blockquote {
   margin-top: 1em;
   margin-bottom: 1em;
+}
+
+/* category colors */
+main {
+  --category-color: #1b7b7e; 
 }
 
 /* above the fold CSS goes here to squash CLS */
