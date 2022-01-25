@@ -1,0 +1,43 @@
+main .featured-articles-container > div {
+  max-width: 1200px;
+}
+
+main .featured-articles-card {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+main .featured-articles-card img {
+  width: 100%;
+  border-radius: 15px;
+}
+
+
+@media (min-width: 600px) {
+  main .featured-articles-col {
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  main .featured-articles-card {
+    width: 50%;
+  }
+
+  main .featured-articles-hero .featured-articles-card, main .featured-articles-large .featured-articles-card  {
+    width: 100%;
+  }
+}
+
+@media (min-width: 1200px) {
+
+  main .featured-articles-row {
+    display: flex;
+  }
+
+  main .featured-articles-col {
+    width: 50%;
+  }
+}

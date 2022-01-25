@@ -370,6 +370,28 @@ function removeStylingFromImages(main) {
 }
 
 /**
+ * Turns absolute links within the domain into relative links.
+ * @param {Element} main The container element
+ */
+export function makeLinksRelative(main) {
+  main.querySelectorAll('a').forEach((a) => {
+    // eslint-disable-next-line no-use-before-define
+    const hosts = ['hlx3.page', 'hlx.page', 'hlx.live', ...PRODUCTION_DOMAINS];
+    if (a.href) {
+      try {
+        const url = new URL(a.href);
+        const relative = hosts.some((host) => url.hostname.includes(host));
+        if (relative) a.href = `${url.pathname}${url.search}${url.hash}`;
+      } catch (e) {
+        // something went wrong
+        // eslint-disable-next-line no-console
+        console.log(e);
+      }
+    }
+  });
+}
+
+/**
  * Normalizes all headings within a container element.
  * @param {Element} $elem The container element
  * @param {[string]]} allowedHeadings The list of allowed headings (h1 ... h6)
@@ -486,12 +508,27 @@ initHlx();
 
 const LCP_BLOCKS = ['marquee']; // add your LCP blocks to the list
 const RUM_GENERATION = 'bamboo-1'; // add your RUM generation information here
+const PRODUCTION_DOMAINS = ['bamboohr'];
 
 sampleRUM('top');
 window.addEventListener('load', () => sampleRUM('load'));
 document.addEventListener('click', () => sampleRUM('click'));
 
 loadPage(document);
+
+export async function lookupArticles(pathnames) {
+  if (!window.pageIndex) {
+    const resp = await fetch('/blog-query-index.json');
+    const json = await resp.json();
+    const lookup = {};
+    json.data.forEach((row) => {
+      lookup[row.path] = row;
+    });
+    window.pageIndex = { data: json.data, lookup };
+  }
+  const result = pathnames.map((path) => window.pageIndex.lookup[path]).filter((e) => e);
+  return (result);
+}
 
 // eslint-disable-next-line no-unused-vars
 function buildHeroBlock(main) {
@@ -574,6 +611,7 @@ export function decorateMain(main) {
   // forward compatible pictures redecoration
   decoratePictures(main);
   removeStylingFromImages(main);
+  makeLinksRelative(main);
   buildAutoBlocks(main);
   decorateButtons(main);
   decorateSections(main);
