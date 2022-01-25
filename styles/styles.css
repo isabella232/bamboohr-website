@@ -359,6 +359,7 @@ p, dl, ol, ul, pre, blockquote {
 /* category colors */
 main {
   --category-color: #1b7b7e; 
+  --category-bg-color: #e5fdff;
 }
 
 /* above the fold CSS goes here to squash CLS */
