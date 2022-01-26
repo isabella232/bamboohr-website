@@ -1,6 +1,7 @@
 import { lookupArticles, createOptimizedPicture, toClassName } from '../../scripts/scripts.js';
 
 function createCard(article) {
+  const title = article.title.split(' - ')[0];
   const card = document.createElement('div');
   card.className = 'featured-articles-card';
   const pictureString = createOptimizedPicture(
@@ -14,7 +15,7 @@ function createCard(article) {
     </div>
     ${pictureString}
     <div class="featured-articles-card-body">
-    <h3>${article.title}</h3>
+    <h3>${title}</h3>
     <p>${article.description}</p>
     <p><a href="${article.path}">Read Now</a></p>
     </div>`;
