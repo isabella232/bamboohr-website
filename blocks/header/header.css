@@ -284,6 +284,7 @@ header .nav-section.nav-section-subscribe form {
     border-radius: 0 0 20px 20px;
     box-sizing: border-box;
     color: #666;
+    transform: translate(0, -1000px);
   }
 
   header .nav-section li {
@@ -295,7 +296,9 @@ header .nav-section.nav-section-subscribe form {
   header .nav-section[aria-expanded='true'] > ul, header .nav-section[aria-expanded='true'] > .nav-section-wrapper {
     opacity: 1;
     max-height: 100vh;
+    display: block;
     transition: max-height 0.4s linear;
+    transform: unset;
   } 
 
   header .nav-section > ul > *, header .nav-section > .nav-section-wrapper > * {
@@ -315,7 +318,6 @@ header .nav-section.nav-section-subscribe form {
     border-radius: 0 0 20px 0;
     height: 100%;
     box-sizing: border-box;
-    z-index: -1;
     padding-top: 12px;  
     max-height: unset;
   }
@@ -324,6 +326,8 @@ header .nav-section.nav-section-subscribe form {
     opacity: 1;
     left: 280px;
     transition: left 0.1s linear;
+    z-index: -1;
+    transform: unset;
   }
 
   header .nav-section[aria-expanded='true'] li[aria-expanded='true'] {

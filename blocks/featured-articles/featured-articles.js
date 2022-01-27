@@ -1,20 +1,21 @@
 import { lookupArticles, createOptimizedPicture, toClassName } from '../../scripts/scripts.js';
 
-function createCard(article) {
+export function createCard(article, classPrefix) {
   const title = article.title.split(' - ')[0];
   const card = document.createElement('div');
-  card.className = 'featured-articles-card';
+  card.className = `${classPrefix}-card`;
+  const image = article.cardImage || article.image;
   const pictureString = createOptimizedPicture(
-    article.image,
+    image,
     article.imageAlt,
     false, [{ width: 750 }],
   ).outerHTML;
-  card.innerHTML = `<div class="featured-articles-card-header category-color-${toClassName(article.category)}">
-    <span class="featured-articles-card-category">${article.category}</span> 
-    <span class="featured-articles-card-readtime">${article.readTime || ''}</span>
+  card.innerHTML = `<div class="${classPrefix}-card-header category-color-${toClassName(article.category)}">
+    <span class="${classPrefix}-card-category">${article.category}</span> 
+    <span class="${classPrefix}-card-readtime">${article.readTime || ''}</span>
     </div>
-    ${pictureString}
-    <div class="featured-articles-card-body">
+    <div class="${classPrefix}-card-picture"><a href="${article.path}">${pictureString}</a></div>
+    <div class="${classPrefix}-card-body">
     <h3>${title}</h3>
     <p>${article.description}</p>
     <p><a href="${article.path}">Read Now</a></p>
@@ -36,7 +37,7 @@ export default async function decorate(block) {
       if (articles.length) {
         const [article] = articles;
         if (category) article.category = category;
-        const card = createCard(article);
+        const card = createCard(article, 'featured-articles');
         contents.push(card.outerHTML);
       }
     } else {

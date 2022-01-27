@@ -119,7 +119,7 @@ main .featured-articles-hero .featured-articles-card h3 {
     grid-template-columns: 50% 50%;
   }
 
-  main .featured-articles-hero .featured-articles-card picture {
+  main .featured-articles-hero .featured-articles-card .featured-articles-card-picture {
     grid-area: picture;
     padding-right: 32px;
   }
