@@ -1,6 +1,6 @@
 import { lookupArticles, createOptimizedPicture, toClassName } from '../../scripts/scripts.js';
 
-export function createCard(article, classPrefix) {
+export function createCard(article, classPrefix, eager = false) {
   const title = article.title.split(' - ')[0];
   const card = document.createElement('div');
   card.className = `${classPrefix}-card`;
@@ -8,7 +8,7 @@ export function createCard(article, classPrefix) {
   const pictureString = createOptimizedPicture(
     image,
     article.imageAlt,
-    false, [{ width: 750 }],
+    eager, [{ width: 750 }],
   ).outerHTML;
   card.innerHTML = `<div class="${classPrefix}-card-header category-color-${toClassName(article.category)}">
     <span class="${classPrefix}-card-category">${article.category}</span> 
@@ -37,7 +37,7 @@ export default async function decorate(block) {
       if (articles.length) {
         const [article] = articles;
         if (category) article.category = category;
-        const card = createCard(article, 'featured-articles');
+        const card = createCard(article, 'featured-articles', i === 0);
         contents.push(card.outerHTML);
       }
     } else {
