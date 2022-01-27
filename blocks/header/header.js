@@ -1,3 +1,5 @@
+import { toClassName } from '../../scripts/scripts.js';
+
 /**
  * collapses all open nav sections
  * @param {Element} sections The container element
@@ -6,6 +8,19 @@
 function collapseAll(elems) {
   elems.forEach((section) => {
     section.setAttribute('aria-expanded', 'false');
+  });
+}
+
+function insertNewsletterForm(elem) {
+  elem.querySelectorAll('a[href="https://www.bamboohr.com/ajax/blog-newsletter-form.php"]').forEach((a) => {
+    const formDiv = document.createElement('div');
+    formDiv.innerHTML = `
+    <form class="nav-form" action="https://www.bamboohr.com/ajax/blog-newsletter-form.php" method="post" __bizdiag="96619420" __biza="WJ__">
+      <input type="email" name="email" placeholder="Email Address" aria-label="email" autocomplete="off">
+      <button type="submit" class="">${a.textContent}</button>
+    </form>
+    `;
+    a.replaceWith(formDiv);
   });
 }
 
@@ -43,6 +58,7 @@ export default async function decorate(block) {
       if (h2) {
         const ul = navSection.querySelector('ul');
         if (!ul) {
+          navSection.classList.add(`nav-section-${toClassName(h2.textContent)}`);
           const wrapper = document.createElement('div');
           wrapper.className = 'nav-section-wrapper';
           while (h2.nextElementSibling) wrapper.append(h2.nextElementSibling);
@@ -90,4 +106,5 @@ export default async function decorate(block) {
   nav.setAttribute('aria-expanded', 'false');
 
   block.append(nav);
+  insertNewsletterForm(block);
 }
