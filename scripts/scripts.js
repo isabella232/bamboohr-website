@@ -506,7 +506,7 @@ initHlx();
  * ------------------------------------------------------------
  */
 
-const LCP_BLOCKS = ['marquee']; // add your LCP blocks to the list
+const LCP_BLOCKS = ['marquee', 'featured-articles']; // add your LCP blocks to the list
 const RUM_GENERATION = 'bamboo-1'; // add your RUM generation information here
 const PRODUCTION_DOMAINS = ['bamboohr'];
 
