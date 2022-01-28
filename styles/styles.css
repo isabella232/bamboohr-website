@@ -339,7 +339,6 @@ main .section-wrapper > div {
   }
 
   main .section-wrapper > div > :not(div) {
-    max-width: 600px;
     margin-left: auto;
     margin-right: auto;
   }

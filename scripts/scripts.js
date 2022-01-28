@@ -542,6 +542,29 @@ function buildHeroBlock(main) {
   }
 }
 
+function buildArticleHeader(main) {
+  try {
+    const author = getMetadata('author');
+    const publicationDate = getMetadata('publication-date');
+    const readtime = getMetadata('read-time');
+    const category = getMetadata('category');
+    const h1 = document.querySelector('h1');
+    const picture = document.querySelector('h1 + p > picture');
+    if (author && publicationDate) {
+      const section = document.createElement('div');
+      section.append(buildBlock('article-header', [
+        [picture],
+        [`<p>${category}</p><p>${readtime}</p>`],
+        [h1],
+        [`<p>${author}</p><p>${publicationDate}</p>`],
+      ]));
+      main.prepend(section);
+    }
+  } catch (e) {
+    // something went wrong
+  }
+}
+
 function loadHeader(header) {
   const headerBlock = buildBlock('header', '');
   header.append(headerBlock);
@@ -563,7 +586,7 @@ function loadFooter(footer) {
 // eslint-disable-next-line no-unused-vars
 function buildAutoBlocks(main) {
   try {
-    // buildHeroBlock(main);
+    buildArticleHeader(main);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);

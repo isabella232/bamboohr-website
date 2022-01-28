@@ -1,7 +1,3 @@
-main .article-header-container {
-  visibility: unset;
-}
-
 
 /* article header */
 
@@ -11,140 +7,101 @@ main .article-header-container > div {
   margin: 0 auto;
 }
 
-@media (min-width: 700px) {
-  main .article-header {
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 0;
-    padding-right: 0;
-  }
-}
-
-main .article-header .article-category,
-main .article-header .article-title,
-main .article-feature-image .caption {
-  margin-left: 32px;
-  margin-right: 32px;
-}
-
-@media (min-width: 700px) {
-  main .article-header .article-category,
-  main .article-header .article-title,
-  main .article-header .article-byline {
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 0;
-    padding-right: 0;
-  }
-}
-
-main .article-header .article-category p,
-main .article-header .article-category a {
-  margin: 0;
-  margin-bottom: 16px;
-  padding-left: 2rem;
-  padding-right: 2rem;
-  font-weight: var(--detail-font-weight);
-  color: var(--detail-color);
-  font-size: var(--detail-font-size-s);
-  line-height: var(--detail-line-height);
-  text-transform: uppercase;
-  text-decoration: none;
-  letter-spacing: .1em;
-  
-}
-
-@media (min-width: 700px) {
-  main .article-header .article-category p,
-  main .article-header .article-category a {
-    padding: 0;
-  }
-}
-
-main .article-title h1 {
-  color: var(--color-gray-800);
-  font-size: var(--heading-font-size-s);
-  margin: 0;
-  margin-top: 16px;
-  padding-left: 2rem;
-  padding-right: 2rem;
-}
-
-@media (min-width: 480px) {
-  main .article-title h1 {
-    font-size: var(--heading-font-size-m);
-  }
-}
-
-@media (min-width: 700px) {
-  main .article-title h1 {
-    font-size: var(--heading-font-size-l);
-    padding: 0;
-  }
-}
-
-@media (min-width: 1200px) {
-  main .article-title h1 {
-    font-size: var(--heading-font-size-xl);
-  }
-}
-
-main .article-byline {
-  display: flex;
-  margin-top: 40px;
-  margin-bottom: 40px;
-  padding: 0 2rem;
-}
-
-main .article-byline .article-author-image,
-main .article-byline .article-author-image img {
-  margin: 0;
-  background: #fa0f00;
-  margin-right: 16px;
-  height: 64px;
-  width: 64px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-main .article-byline .article-byline-info {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-main .article-byline p {
-  margin: 0;
-  padding: 0;
-  font-size: var(--detail-font-size-m);
-  line-height: var(--detail-line-height);
-}
-
-main .article-author {
-  font-weight: 600;
-}
-
-main .article-date {
-  font-weight: 300;
-}
-
-/* feature img */
-
-main .article-header .article-feature-image {
-  padding: 0;
+main .article-header > div {
+  max-width: 800px;
   margin: auto;
-  width: 100%;
-  max-width: 1000px;
+  padding: 0 20px
 }
 
-main .article-feature-image .figure-feature {
+main .article-header p {
+  display: inline-block;
   margin: 0;
 }
 
-main .article-feature-image .figure-feature img {
-  width: 100%;
-  max-height: 440px;
+main .article-header .article-header-image {
+  max-width: unset;
+  position: relative;
+  height: 450px;
+  background-image: url(/styles/single-post-leaf.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: bottom;
+}
+
+main .article-header picture {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
   object-fit: cover;
+  box-sizing: border-box;
+}
+
+main .article-header img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+main .article-header-eyebrow {
+  color: var(--category-color);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+main .article-header-read-time::before {
+  content: '•';
+  display: inline-block;
+  margin: 1px 8px 0 4px;
+  font-size: 10px;
+  vertical-align: top;
+}
+
+main .article-header-read-time:empty:before {
+  display: none;
+}
+
+main .article-header h1 {
+  font-family: var(--heading-font-family);
+  font-style: italic;
+  font-size: 28px;
+  margin: 12px 0;
+  color: #444;
+}
+
+main .article-header .article-header-author-pub {
+  color: #777;
+}
+
+main .article-header-author::before {
+  content: 'By ';
+}
+
+main .article-header-publication-date::before {
+  content: '•';
+  display: inline-block;
+  margin: 5px 20px 0 18px;
+  font-size: 14px;
+  vertical-align: top;
+}
+
+
+@media (min-width: 900px) {
+  main .article-header-eyebrow {
+    font-size: 16px;
+  }
+
+  main .article-header-read-time::before {
+    content: '•';
+    margin: 1px 8px 0 4px;
+    font-size: 14px;
+  }
+
+  main .article-header h1 {
+    font-size: 48px;
+  }
 }
