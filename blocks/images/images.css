@@ -70,3 +70,13 @@ main .images-list .figure img {
   width: 100%;
   min-width: unset;
 }
+
+
+@media (min-width: 1200px) {
+  main .section > .images-wrapper {
+    max-width: 1200px;
+  }
+  main .images .figure {
+    max-width: 1200px;
+  }
+}

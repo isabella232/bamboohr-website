@@ -116,24 +116,6 @@ export function toClassName(name) {
 }
 
 /**
- * Wraps each section in an additional {@code div}.
- * @param {[Element]} $sections The sections
- */
-function wrapSections($sections) {
-  $sections.forEach(($div) => {
-    if ($div.childNodes.length === 0) {
-      // remove empty sections
-      $div.remove();
-    } else if (!$div.id) {
-      const $wrapper = document.createElement('div');
-      $wrapper.className = 'section-wrapper';
-      $div.parentNode.appendChild($wrapper);
-      $wrapper.appendChild($div);
-    }
-  });
-}
-
-/**
  * Decorates a block.
  * @param {Element} block The block element
  */
@@ -142,7 +124,7 @@ export function decorateBlock(block) {
   const classes = Array.from(block.classList.values());
   const blockName = classes[0];
   if (!blockName) return;
-  const section = block.closest('.section-wrapper');
+  const section = block.closest('.section');
   if (section) {
     section.classList.add(`${blockName}-container`.replace(/--/g, '-'));
   }
@@ -155,6 +137,9 @@ export function decorateBlock(block) {
   block.classList.add('block');
   block.setAttribute('data-block-name', shortBlockName);
   block.setAttribute('data-block-status', 'initialized');
+
+  const blockWrapper = block.parentElement;
+  blockWrapper.classList.add(`${shortBlockName}-wrapper`);
 }
 
 /**
@@ -162,8 +147,19 @@ export function decorateBlock(block) {
  * @param {Element} $main The container element
  */
 function decorateSections($main) {
-  wrapSections($main.querySelectorAll(':scope > div'));
-  $main.querySelectorAll(':scope > div.section-wrapper').forEach((section) => {
+  $main.querySelectorAll(':scope > div').forEach((section) => {
+    const wrappers = [];
+    let defaultContent = false;
+    [...section.children].forEach((e) => {
+      if (e.tagName === 'DIV' || !defaultContent) {
+        const wrapper = document.createElement('div');
+        wrappers.push(wrapper);
+        defaultContent = e.tagName !== 'DIV';
+      }
+      wrappers[wrappers.length - 1].append(e);
+    });
+    wrappers.forEach((wrapper) => section.append(wrapper));
+    section.classList.add('section');
     section.setAttribute('data-section-status', 'initialized');
   });
 }
@@ -173,7 +169,7 @@ function decorateSections($main) {
  * @param {Element} $main The container element
  */
 function updateSectionsStatus($main) {
-  const sections = [...$main.querySelectorAll(':scope > div.section-wrapper')];
+  const sections = [...$main.querySelectorAll(':scope > div.section')];
   for (let i = 0; i < sections.length; i += 1) {
     const section = sections[i];
     const status = section.getAttribute('data-section-status');
@@ -195,7 +191,7 @@ function updateSectionsStatus($main) {
  */
 function decorateBlocks($main) {
   $main
-    .querySelectorAll('div.section-wrapper > div > div')
+    .querySelectorAll('div.section > div > div')
     .forEach(($block) => decorateBlock($block));
 }
 
@@ -550,6 +546,7 @@ function buildArticleHeader(main) {
     const h1 = document.querySelector('h1');
     const picture = document.querySelector('h1 + p > picture');
     if (author && publicationDate) {
+      document.body.classList.add('blog-post');
       const section = document.createElement('div');
       section.append(buildBlock('article-header', [
         [picture],
@@ -558,10 +555,12 @@ function buildArticleHeader(main) {
         [`<p>${author}</p><p>${publicationDate}</p>`],
       ]));
       main.prepend(section);
+      return (true);
     }
   } catch (e) {
     // something went wrong
   }
+  return (false);
 }
 
 function loadHeader(header) {
@@ -578,6 +577,68 @@ function loadFooter(footer) {
   loadBlock(footerBlock);
 }
 
+function buildImagesBlocks(main) {
+  main.querySelectorAll(':scope > div > p > picture').forEach((picture) => {
+    const p = picture.parentElement;
+    const div = p.parentElement;
+    const nextSib = p.nextElementSibling;
+    if ([...p.children].length === 1) {
+      div.insertBefore(buildBlock('images', { elems: [p] }), nextSib);
+    }
+  });
+}
+
+/**
+ * Build figcaption element
+ * @param {Element} pEl The original element to be placed in figcaption.
+ * @returns figCaptionEl Generated figcaption
+ */
+export function buildCaption(pEl) {
+  const figCaptionEl = document.createElement('figcaption');
+  pEl.classList.add('caption');
+  figCaptionEl.append(pEl);
+  return figCaptionEl;
+}
+
+/**
+ * Build figure element
+ * @param {Element} blockEl The original element to be placed in figure.
+ * @returns figEl Generated figure
+ */
+export function buildFigure(blockEl) {
+  const figEl = document.createElement('figure');
+  figEl.classList.add('figure');
+  // content is picture only, no caption or link
+  if (blockEl.firstChild) {
+    if (blockEl.firstChild.nodeName === 'PICTURE' || blockEl.firstChild.nodeName === 'VIDEO') {
+      figEl.append(blockEl.firstChild);
+    } else if (blockEl.firstChild.nodeName === 'P') {
+      const pEls = Array.from(blockEl.children);
+      pEls.forEach((pEl) => {
+        if (pEl.firstChild) {
+          if (pEl.firstChild.nodeName === 'PICTURE' || pEl.firstChild.nodeName === 'VIDEO') {
+            figEl.append(pEl.firstChild);
+          } else if (pEl.firstChild.nodeName === 'EM') {
+            const figCapEl = buildCaption(pEl);
+            figEl.append(figCapEl);
+          } else if (pEl.firstChild.nodeName === 'A') {
+            const picEl = figEl.querySelector('picture');
+            if (picEl) {
+              pEl.firstChild.textContent = '';
+              pEl.firstChild.append(picEl);
+            }
+            figEl.prepend(pEl.firstChild);
+          }
+        }
+      });
+    // catch link-only figures (like embed blocks);
+    } else if (blockEl.firstChild.nodeName === 'A') {
+      figEl.append(blockEl.firstChild);
+    }
+  }
+  return figEl;
+}
+
 /**
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
@@ -585,7 +646,8 @@ function loadFooter(footer) {
 // eslint-disable-next-line no-unused-vars
 function buildAutoBlocks(main) {
   try {
-    buildArticleHeader(main);
+    const isBlog = buildArticleHeader(main);
+    if (isBlog) buildImagesBlocks(main);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
@@ -596,7 +658,7 @@ export function decorateButtons(block = document) {
   const noButtonBlocks = [];
   block.querySelectorAll(':scope a').forEach(($a) => {
     $a.title = $a.title || $a.textContent;
-    const $block = $a.closest('div.section-wrapper > div > div');
+    const $block = $a.closest('div.section > div > div');
     let blockName;
     if ($block) {
       blockName = $block.className;
