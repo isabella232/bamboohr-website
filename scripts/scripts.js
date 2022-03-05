@@ -533,6 +533,35 @@ function buildHeroBlock(main) {
   }
 }
 
+/**
+ * forward looking *.metadata.json experiment
+ * fetches metadata.json of page
+ * @param {path} path to *.metadata.json
+ * @returns {Object} containing sanitized meta data
+ */
+
+export async function getMetadataJson(path) {
+  const resp = await fetch(path.split('.')[0]);
+  const text = await resp.text();
+  const meta = {};
+  if (resp.status === 200 && text && text.includes('<head>')) {
+    const headStr = text.split('<head>')[1].split('</head>')[0];
+    const head = document.createElement('head');
+    head.innerHTML = headStr;
+    const metaTags = head.querySelectorAll(':scope > meta');
+    metaTags.forEach((metaTag) => {
+      const name = metaTag.getAttribute('name') || metaTag.getAttribute('property');
+      const value = metaTag.getAttribute('content');
+      if (meta[name]) {
+        meta[name] += `, ${value}`;
+      } else {
+        meta[name] = value;
+      }
+    });
+  }
+  return (JSON.stringify(meta));
+}
+
 function buildArticleHeader(main) {
   try {
     const author = getMetadata('author');
@@ -649,7 +678,11 @@ export function buildFigure(blockEl) {
 function buildAutoBlocks(main) {
   try {
     const isBlog = buildArticleHeader(main);
-    if (isBlog) buildImagesBlocks(main);
+    if (isBlog) {
+      buildImagesBlocks(main);
+      const related = main.querySelector('.related-posts');
+      if (related) related.parentElement.insertBefore(buildBlock('author', [['']]), related);
+    }
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
