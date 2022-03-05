@@ -42,17 +42,22 @@ export function sampleRUM(checkpoint, data = {}) {
       sendPing();
       // special case CWV
       if (checkpoint === 'cwv') {
-        // eslint-disable-next-line import/no-unresolved
-        import('./web-vitals-module-2-1-2.js').then((mod) => {
+        // use classic script to avoid CORS issues
+        const script = document.createElement('script');
+        script.src = 'https://rum.hlx3.page/.rum/web-vitals/dist/web-vitals.iife.js';
+        script.onload = () => {
           const storeCWV = (measurement) => {
             data.cwv = {};
             data.cwv[measurement.name] = measurement.value;
             sendPing();
           };
-          mod.getCLS(storeCWV);
-          mod.getFID(storeCWV);
-          mod.getLCP(storeCWV);
-        });
+            // When loading `web-vitals` using a classic script, all the public
+            // methods can be found on the `webVitals` global namespace.
+          window.webVitals.getCLS(storeCWV);
+          window.webVitals.getFID(storeCWV);
+          window.webVitals.getLCP(storeCWV);
+        };
+        document.head.appendChild(script);
       }
     }
   } catch (e) {
@@ -86,8 +91,8 @@ export function loadCSS(href, callback) {
  */
 export function getMetadata(name) {
   const attr = name && name.includes(':') ? 'property' : 'name';
-  const $meta = document.head.querySelector(`meta[${attr}="${name}"]`);
-  return $meta && $meta.content;
+  const meta = document.head.querySelector(`meta[${attr}="${name}"]`);
+  return meta && meta.content;
 }
 
 /**
@@ -98,7 +103,7 @@ export function addPublishDependencies(url) {
   const urls = Array.isArray(url) ? url : [url];
   window.hlx = window.hlx || {};
   if (window.hlx.dependencies && Array.isArray(window.hlx.dependencies)) {
-    window.hlx.dependencies.concat(urls);
+    window.hlx.dependencies = window.hlx.dependencies.concat(urls);
   } else {
     window.hlx.dependencies = urls;
   }
@@ -144,10 +149,10 @@ export function decorateBlock(block) {
 
 /**
  * Decorates all sections in a container element.
- * @param {Element} $main The container element
+ * @param {Element} main The container element
  */
-function decorateSections($main) {
-  $main.querySelectorAll(':scope > div').forEach((section) => {
+export function decorateSections(main) {
+  main.querySelectorAll(':scope > div').forEach((section) => {
     const wrappers = [];
     let defaultContent = false;
     [...section.children].forEach((e) => {
@@ -163,13 +168,12 @@ function decorateSections($main) {
     section.setAttribute('data-section-status', 'initialized');
   });
 }
-
 /**
  * Updates all section status in a container element.
- * @param {Element} $main The container element
+ * @param {Element} main The container element
  */
-function updateSectionsStatus($main) {
-  const sections = [...$main.querySelectorAll(':scope > div.section')];
+export function updateSectionsStatus(main) {
+  const sections = [...main.querySelectorAll(':scope > div.section')];
   for (let i = 0; i < sections.length; i += 1) {
     const section = sections[i];
     const status = section.getAttribute('data-section-status');
@@ -187,12 +191,12 @@ function updateSectionsStatus($main) {
 
 /**
  * Decorates all blocks in a container element.
- * @param {Element} $main The container element
+ * @param {Element} main The container element
  */
-function decorateBlocks($main) {
-  $main
+export function decorateBlocks(main) {
+  main
     .querySelectorAll('div.section > div > div')
-    .forEach(($block) => decorateBlock($block));
+    .forEach((block) => decorateBlock(block));
 }
 
 /**
@@ -200,7 +204,7 @@ function decorateBlocks($main) {
  * @param {string} blockName name of the block
  * @param {any} content two dimensional array or string or object of content
  */
-function buildBlock(blockName, content) {
+export function buildBlock(blockName, content) {
   const table = Array.isArray(content) ? content : [[content]];
   const blockEl = document.createElement('div');
   // build image block nested div structure
@@ -228,7 +232,7 @@ function buildBlock(blockName, content) {
 
 /**
  * Loads JS and CSS for a block.
- * @param {Element} $block The block element
+ * @param {Element} block The block element
  */
 export async function loadBlock(block, eager = false) {
   if (!(block.getAttribute('data-block-status') === 'loading' || block.getAttribute('data-block-status') === 'loaded')) {
@@ -263,47 +267,47 @@ export async function loadBlock(block, eager = false) {
 
 /**
  * Loads JS and CSS for all blocks in a container element.
- * @param {Element} $main The container element
+ * @param {Element} main The container element
  */
-export async function loadBlocks($main) {
-  updateSectionsStatus($main);
-  const blocks = [...$main.querySelectorAll('div.block')];
+export async function loadBlocks(main) {
+  updateSectionsStatus(main);
+  const blocks = [...main.querySelectorAll('div.block')];
   for (let i = 0; i < blocks.length; i += 1) {
     // eslint-disable-next-line no-await-in-loop
     await loadBlock(blocks[i]);
-    updateSectionsStatus($main);
+    updateSectionsStatus(main);
   }
 }
 
 /**
  * Extracts the config from a block.
- * @param {Element} $block The block element
+ * @param {Element} block The block element
  * @returns {object} The block config
  */
-export function readBlockConfig($block) {
+export function readBlockConfig(block) {
   const config = {};
-  $block.querySelectorAll(':scope>div').forEach(($row) => {
-    if ($row.children) {
-      const $cols = [...$row.children];
-      if ($cols[1]) {
-        const $value = $cols[1];
-        const name = toClassName($cols[0].textContent);
+  block.querySelectorAll(':scope>div').forEach((row) => {
+    if (row.children) {
+      const cols = [...row.children];
+      if (cols[1]) {
+        const col = cols[1];
+        const name = toClassName(cols[0].textContent);
         let value = '';
-        if ($value.querySelector('a')) {
-          const $as = [...$value.querySelectorAll('a')];
-          if ($as.length === 1) {
-            value = $as[0].href;
+        if (col.querySelector('a')) {
+          const as = [...col.querySelectorAll('a')];
+          if (as.length === 1) {
+            value = as[0].href;
           } else {
-            value = $as.map(($a) => $a.href);
+            value = as.map((a) => a.href);
           }
-        } else if ($value.querySelector('p')) {
-          const $ps = [...$value.querySelectorAll('p')];
-          if ($ps.length === 1) {
-            value = $ps[0].textContent;
+        } else if (col.querySelector('p')) {
+          const ps = [...col.querySelectorAll('p')];
+          if (ps.length === 1) {
+            value = ps[0].textContent;
           } else {
-            value = $ps.map(($p) => $p.textContent);
+            value = ps.map((p) => p.textContent);
           }
-        } else value = $row.children[1].textContent;
+        } else value = row.children[1].textContent;
         config[name] = value;
       }
     }
@@ -341,10 +345,10 @@ export function createOptimizedPicture(src, alt = '', eager = false, breakpoints
       picture.appendChild(source);
     } else {
       const img = document.createElement('img');
-      img.setAttribute('src', `${pathname}?width=${br.width}&format=${ext}&optimize=medium`);
       img.setAttribute('loading', eager ? 'eager' : 'lazy');
       img.setAttribute('alt', alt);
       picture.appendChild(img);
+      img.setAttribute('src', `${pathname}?width=${br.width}&format=${ext}&optimize=medium`);
     }
   });
 
@@ -352,16 +356,30 @@ export function createOptimizedPicture(src, alt = '', eager = false, breakpoints
 }
 
 /**
- * Removes formatting from images.
- * @param {Element} main The container element
+ * Normalizes all headings within a container element.
+ * @param {Element} el The container element
+ * @param {[string]]} allowedHeadings The list of allowed headings (h1 ... h6)
  */
-function removeStylingFromImages(main) {
-  // remove styling from images, if any
-  const imgs = [...main.querySelectorAll('strong picture'), ...main.querySelectorAll('em picture')];
-  imgs.forEach((img) => {
-    const parentEl = img.closest('p');
-    parentEl.prepend(img);
-    parentEl.lastChild.remove();
+export function normalizeHeadings(el, allowedHeadings) {
+  const allowed = allowedHeadings.map((h) => h.toLowerCase());
+  el.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach((tag) => {
+    const h = tag.tagName.toLowerCase();
+    if (allowed.indexOf(h) === -1) {
+      // current heading is not in the allowed list -> try first to "promote" the heading
+      let level = parseInt(h.charAt(1), 10) - 1;
+      while (allowed.indexOf(`h${level}`) === -1 && level > 0) {
+        level -= 1;
+      }
+      if (level === 0) {
+        // did not find a match -> try to "downgrade" the heading
+        while (allowed.indexOf(`h${level}`) === -1 && level < 7) {
+          level += 1;
+        }
+      }
+      if (level !== 7) {
+        tag.outerHTML = `<h${level} id="${tag.id}">${tag.textContent}</h${level}>`;
+      }
+    }
   });
 }
 
@@ -388,42 +406,18 @@ export function makeLinksRelative(main) {
 }
 
 /**
- * Normalizes all headings within a container element.
- * @param {Element} $elem The container element
- * @param {[string]]} allowedHeadings The list of allowed headings (h1 ... h6)
- */
-export function normalizeHeadings($elem, allowedHeadings) {
-  const allowed = allowedHeadings.map((h) => h.toLowerCase());
-  $elem.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach((tag) => {
-    const h = tag.tagName.toLowerCase();
-    if (allowed.indexOf(h) === -1) {
-      // current heading is not in the allowed list -> try first to "promote" the heading
-      let level = parseInt(h.charAt(1), 10) - 1;
-      while (allowed.indexOf(`h${level}`) === -1 && level > 0) {
-        level -= 1;
-      }
-      if (level === 0) {
-        // did not find a match -> try to "downgrade" the heading
-        while (allowed.indexOf(`h${level}`) === -1 && level < 7) {
-          level += 1;
-        }
-      }
-      if (level !== 7) {
-        tag.outerHTML = `<h${level}>${tag.textContent}</h${level}>`;
-      }
-    }
-  });
-}
-
-/**
- * Decorates the picture elements.
+ * Decorates the picture elements and removes formatting.
  * @param {Element} main The container element
  */
-function decoratePictures(main) {
+export function decoratePictures(main) {
   main.querySelectorAll('img[src*="/media_"').forEach((img, i) => {
     const newPicture = createOptimizedPicture(img.src, img.alt, !i);
     const picture = img.closest('picture');
     if (picture) picture.parentElement.replaceChild(newPicture, picture);
+    if (['EM', 'STRONG'].includes(newPicture.parentElement.tagName)) {
+      const styleEl = newPicture.parentElement;
+      styleEl.parentElement.replaceChild(newPicture, styleEl);
+    }
   });
 }
 
@@ -434,6 +428,7 @@ function decoratePictures(main) {
 export function addFavIcon(href) {
   const link = document.createElement('link');
   link.rel = 'icon';
+  link.type = 'image/svg+xml';
   link.href = href;
   const existingLink = document.querySelector('head link[rel="icon"]');
   if (existingLink) {
@@ -457,6 +452,7 @@ async function waitForLCP() {
   const lcpCandidate = document.querySelector('main img');
   await new Promise((resolve) => {
     if (lcpCandidate && !lcpCandidate.complete) {
+      lcpCandidate.setAttribute('loading', 'eager');
       lcpCandidate.addEventListener('load', () => resolve());
       lcpCandidate.addEventListener('error', () => resolve());
     } else {
@@ -477,7 +473,7 @@ async function loadPage(doc) {
   loadDelayed(doc);
 }
 
-function initHlx() {
+export function initHlx() {
   window.hlx = window.hlx || {};
   window.hlx.lighthouse = new URLSearchParams(window.location.search).get('lighthouse') === 'on';
   window.hlx.codeBasePath = '';
@@ -588,6 +584,12 @@ function buildImagesBlocks(main) {
   });
 }
 
+export function formatDate(dateString) {
+  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const [year, month, day] = dateString.split('-').map((n) => +n);
+  return `${months[month - 1]} ${day}, ${year}`;
+}
+
 /**
  * Build figcaption element
  * @param {Element} pEl The original element to be placed in figcaption.
@@ -684,6 +686,20 @@ export function decorateButtons(block = document) {
         }
       }
     }
+  });
+}
+
+/**
+ * Removes formatting from images.
+ * @param {Element} main The container element
+ */
+function removeStylingFromImages(main) {
+  // remove styling from images, if any
+  const imgs = [...main.querySelectorAll('strong picture'), ...main.querySelectorAll('em picture')];
+  imgs.forEach((img) => {
+    const parentEl = img.closest('p');
+    parentEl.prepend(img);
+    parentEl.lastChild.remove();
   });
 }
 
