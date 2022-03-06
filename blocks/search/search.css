@@ -78,6 +78,9 @@ main .search input {
     margin: auto;
     box-sizing: border-box;
     font-size: 20px;
+    border-radius: 10px;
+    border: 1px solid grey;
+    font-family: var(--body-font-family);
 }
 
 main .search .search-box {

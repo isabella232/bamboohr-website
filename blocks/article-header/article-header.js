@@ -9,7 +9,7 @@ function applyClasses(styles, elements, prefix) {
 function createSearch() {
   const div = document.createElement('div');
   div.className = 'article-header-search';
-  div.innerHTML = '<a href="/blog/search"><img src="/icons/search.svg" class="icon icon-search"></a>';
+  div.innerHTML = '<a href="/tools/search"><img src="/icons/search.svg" class="icon icon-search"></a>';
   return (div);
 }
 
