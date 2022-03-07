@@ -225,7 +225,9 @@ main h1, main h2, main h3, main h4, main h5, main h6 {
 }
 
 main h1 {
+  font-family: var(--heading-font-family);
   font-size: var(--heading-font-size-xl);
+  font-style: italic;
 }
 
 main h2 {
@@ -366,4 +368,9 @@ main {
 main .section[data-section-status='loading'], main .section[data-section-status='initialized'] {
     display: none;
   }
+
+main .featured-articles-container > div.default-content-wrapper {
+  padding: 64px;
+  text-align: center;
+}
   

@@ -44,6 +44,11 @@ export default async function decorate(block) {
       contents.push(`<div class="featured-articles-card">${content.outerHTML}</div>`);
     }
   }
+  // pad array with empty strings
+  for (let i = contents.length; i < 10; i += 1) {
+    contents[i] = '';
+  }
+
   const html = `
     <div class="featured-articles-row featured-articles-hero">${contents[0]}</div>
     <div class="featured-articles-row">
