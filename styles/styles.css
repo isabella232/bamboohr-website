@@ -363,6 +363,25 @@ main {
   --category-bg-color: #e5fdff;
 }
 
+.category-voices-in-leadership main,
+.category-color-voices-in-leadership {
+  --category-color: #ce4537;
+  --category-bg-color: #fff5e5;
+}
+
+.category-product-announcements main, 
+div.category-color-product-announcements {
+  --category-color: #1d9336;
+  --category-bg-color: #edffc8;
+}
+
+.category-hiring main, 
+div.category-color-hiring {
+  --category-color: #b6800b;
+  --category-bg-color: #ffffe5;
+}
+
+
 /* above the fold CSS goes here to squash CLS */
 
 main .section[data-section-status='loading'], main .section[data-section-status='initialized'] {

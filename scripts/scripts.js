@@ -563,6 +563,15 @@ export async function getMetadataJson(path) {
   return (JSON.stringify(meta));
 }
 
+function setCategory() {
+  let category = getMetadata('category');
+  if (!category && window.location.pathname.includes('/category/')) {
+    // eslint-disable-next-line prefer-destructuring
+    category = window.location.pathname.split('/category/')[1];
+  }
+  document.body.classList.add(`category-${toClassName(category)}`);
+}
+
 function buildArticleHeader(main) {
   try {
     const author = getMetadata('author');
@@ -747,6 +756,7 @@ export function decorateMain(main) {
   removeStylingFromImages(main);
   makeLinksRelative(main);
   buildAutoBlocks(main);
+  setCategory();
   decorateButtons(main);
   decorateSections(main);
   decorateBlocks(main);
