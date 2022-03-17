@@ -28,7 +28,7 @@
   --color-info-accent-light: #DEDEF9;
 
   /* body */
-  --body-background-color: var(--color-white);
+  --body-background-color: red;
   --body-alt-background-color: var(--color-gray-600);
   --body-font-family: 'Lato', Arial, Helvetica, sans-serif;
   --body-font-weight: 300;
